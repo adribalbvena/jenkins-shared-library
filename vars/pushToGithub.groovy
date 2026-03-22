@@ -1,11 +1,12 @@
 #!/user/bin/env groovy
 def call(Map config = [:]) {
-    assert config.credsId  : "Error: 'credsId' is required for GitHub push"
     assert config.repoName : "Error: 'repoName' is required"
     assert config.file     : "Error: 'file' path to commit is required"
     assert config.message  : "Error: 'message' for git commit is required"
 
-    withCredentials([usernamePassword(credentialsId: "${config.credsId}", passwordVariable: 'GIT_TOKEN', usernameVariable: 'GIT_USER')]) {
+    def githubCreds = config.credsId ?: 'github-creds'
+
+    withCredentials([usernamePassword(credentialsId: githubCreds, passwordVariable: 'GIT_TOKEN', usernameVariable: 'GIT_USER')]) {
         sh 'git config user.email "jenkins-bot@example.com"'
         sh 'git config user.name "Jenkins CI"'
 
